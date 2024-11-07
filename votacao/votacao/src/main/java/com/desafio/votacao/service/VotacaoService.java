@@ -1,5 +1,7 @@
 package com.desafio.votacao.service;
 
+import com.desafio.votacao.exception.PautaException;
+import com.desafio.votacao.exception.VotoException; // Certifique-se de que esta exceção está importada
 import com.desafio.votacao.model.CPFValidation;
 import com.desafio.votacao.model.Pauta;
 import com.desafio.votacao.model.Voto;
@@ -27,11 +29,22 @@ public class VotacaoService {
         return pautaRepository.save(pauta);
     }
 
+    public boolean pautaExists(Long pautaId) {
+        return pautaRepository.existsById(pautaId);
+    }
+
+    public boolean votoJaRegistrado(Long pautaId, String associadoId) {
+        return votoRepository.existsByPautaIdAndAssociadoId(pautaId, associadoId);
+    }
+
     public Voto votar(Long pautaId, String associadoId, String voto) {
-        if (votoRepository.existsByPautaIdAndAssociadoId(pautaId, associadoId)) {
-            throw new RuntimeException("Associado já votou nesta pauta.");
+        if (votoJaRegistrado(pautaId, associadoId)) {
+            throw new VotoException("O associado já votou nesta pauta.");
         }
-        Pauta pauta = pautaRepository.findById(pautaId).orElseThrow(() -> new RuntimeException("Pauta não encontrada."));
+        
+        Pauta pauta = pautaRepository.findById(pautaId)
+                .orElseThrow(() -> new PautaException("Pauta não encontrada."));
+        
         Voto novoVoto = new Voto();
         novoVoto.setPauta(pauta);
         novoVoto.setAssociadoId(associadoId);

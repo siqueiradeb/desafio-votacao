@@ -1,5 +1,7 @@
 package com.desafio.votacao.service;
 
+import com.desafio.votacao.exception.PautaException; // Exceção para pauta não encontrada
+import com.desafio.votacao.exception.VotoException; // Exceção para voto já registrado
 import com.desafio.votacao.model.Pauta;
 import com.desafio.votacao.model.Voto;
 import com.desafio.votacao.repository.PautaRepository;
@@ -78,10 +80,23 @@ public class VotacaoServiceTest {
         when(pautaRepository.findById(1L)).thenReturn(Optional.of(pauta));
         when(votoRepository.existsByPautaIdAndAssociadoId(1L, associadoId)).thenReturn(true);
 
-        Exception exception = assertThrows(RuntimeException.class, () -> {
+        Exception exception = assertThrows(VotoException.class, () -> {
             votacaoService.votar(1L, associadoId, "Sim");
         });
 
-        assertEquals("Associado já votou nesta pauta.", exception.getMessage());
+        assertEquals("O associado já votou nesta pauta.", exception.getMessage());
+    }
+
+    @Test
+    public void testVotarPautaNaoEncontrada() {
+        String associadoId = "12345";
+
+        when(pautaRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(PautaException.class, () -> {
+            votacaoService.votar(1L, associadoId, "Sim");
+        });
+
+        assertEquals("Pauta não encontrada.", exception.getMessage());
     }
 }
