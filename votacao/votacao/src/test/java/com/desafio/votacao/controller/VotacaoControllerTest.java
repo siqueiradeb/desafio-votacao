@@ -27,11 +27,11 @@ public class VotacaoControllerTest {
 
     @BeforeEach
     public void setUp() {
-MockitoAnnotations.openMocks(this); // Inicializa as anotações do Mockito
-        pautaDTO = new PautaDTO(); // Instanciar PautaDTO
+MockitoAnnotations.openMocks(this); 
+        pautaDTO = new PautaDTO(); 
         pautaDTO.setDescricao("Pauta Teste");
 
-        pauta = new Pauta(); // Para simular a pauta criada
+        pauta = new Pauta(); 
         pauta.setId(1L);
         pauta.setDescricao("Pauta Teste");
     }
@@ -40,7 +40,7 @@ MockitoAnnotations.openMocks(this); // Inicializa as anotações do Mockito
     public void testCriarPauta() {
         when(votacaoService.criarPauta("Pauta Teste")).thenReturn(pauta);
 
-        ResponseEntity<Pauta> response = votacaoController.criarPauta(pautaDTO); // Passar pautaDTO
+        ResponseEntity<Pauta> response = votacaoController.criarPauta(pautaDTO); 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Pauta Teste", response.getBody().getDescricao());
     }

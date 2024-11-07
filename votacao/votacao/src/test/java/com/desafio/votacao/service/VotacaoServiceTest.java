@@ -64,7 +64,6 @@ public class VotacaoServiceTest {
 
     @Test
     public void testContarVotos() {
-        // Simulação de votos
         when(votoRepository.countByPautaIdAndVoto(1L, "Sim")).thenReturn(10L);
         when(votoRepository.countByPautaIdAndVoto(1L, "Não")).thenReturn(5L);
 
